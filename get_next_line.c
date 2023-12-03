@@ -6,7 +6,7 @@
 /*   By: mboukour <mboukour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:49:32 by mboukour          #+#    #+#             */
-/*   Updated: 2023/12/01 21:14:32 by mboukour         ###   ########.fr       */
+/*   Updated: 2023/12/03 02:05:49 by mboukour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 char *get_next_line(int fd)
 {
     static char *save;
-    static int reached_last = 0;
+    static int reached_last;
     char *buffer;
     char *newline;
     char *line;
@@ -37,15 +37,21 @@ char *get_next_line(int fd)
             free(buffer);
             buffer = NULL;
             free(save);
-            save= NULL;
+            save = NULL;
             return (NULL);
         }
         if (bytes_read == 0)
         {
             free(buffer);
             buffer = NULL;
-            if (!reached_last && save != NULL && save[0] != '\0')
+            if (!reached_last && save != NULL)
             {
+                if (save[0] == '\0')
+                {
+                    free(save);
+                    save = NULL;
+                    return (NULL);
+                }
                 line = ft_strdup(save);
                 if(!line)
                 {
@@ -103,3 +109,4 @@ char *get_next_line(int fd)
     }
     return (line);
 }
+
