@@ -6,13 +6,11 @@
 /*   By: mboukour <mboukour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:49:32 by mboukour          #+#    #+#             */
-/*   Updated: 2023/12/03 10:52:17 by mboukour         ###   ########.fr       */
+/*   Updated: 2023/12/03 10:57:36 by mboukour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-
 
 
 char *read_and_append(int fd, char **save, int *reached_last) 
@@ -29,7 +27,7 @@ char *read_and_append(int fd, char **save, int *reached_last)
         bytes_read = read(fd, buffer, BUFFER_SIZE);
         if (bytes_read == -1) {
             free(buffer);
-            free(*save);  // Free the save buffer as well
+            free(*save);
             *save = NULL;
             return NULL;
         }
@@ -60,20 +58,23 @@ char *process_line(char **save, int *reached_last) {
         line = ft_substr(*save, 0, newline - *save + 1);
         temp = *save;
         *save = ft_strdup(newline + 1);
-        if (!*save) { // Check if ft_strdup failed
+        if (!*save) 
+        { 
             free(temp);
             return NULL;
         }
         free(temp);
     } else {
-        if (**save == '\0') {
+        if (**save == '\0') 
+        {
             free(*save);
             *save = NULL;
             *reached_last = 1;
             return NULL;
         }
         line = ft_strdup(*save);
-        if (!line) { // Check if ft_strdup failed
+        if (!line) 
+        {
             free(*save);
             *save = NULL;
             return NULL;
