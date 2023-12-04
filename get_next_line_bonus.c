@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mboukour <mboukour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/03 11:28:26 by mboukour          #+#    #+#             */
-/*   Updated: 2023/12/04 09:58:16 by mboukour         ###   ########.fr       */
+/*   Created: 2023/12/04 09:54:06 by mboukour          #+#    #+#             */
+/*   Updated: 2023/12/04 10:30:42 by mboukour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*append_buffer(char **save, char *buffer, int bytes_read)
 {
@@ -99,14 +99,14 @@ char	*process_line(char **save)
 
 char	*get_next_line(int fd)
 {
-	static char	*save;
+	static char	*save[OPEN_MAX];
 	char		*line;
 
 	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE <= 0)
 		return (NULL);
-	save = read_and_append(fd, &save);
-	if (!save)
+	save[fd] = read_and_append(fd, &save[fd]);
+	if (!save[fd])
 		return (NULL);
-	line = process_line(&save);
+	line = process_line(&save[fd]);
 	return (line);
 }
