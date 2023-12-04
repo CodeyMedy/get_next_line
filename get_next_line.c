@@ -6,7 +6,7 @@
 /*   By: mboukour <mboukour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 11:28:26 by mboukour          #+#    #+#             */
-/*   Updated: 2023/12/03 11:51:45 by mboukour         ###   ########.fr       */
+/*   Updated: 2023/12/04 09:50:43 by mboukour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ char	*append_buffer(char **save, char *buffer, int bytes_read)
 	return (*save);
 }
 
-char	*read_and_append(int fd, char **save, int *reached_last)
+char	*read_and_append(int fd, char **save)
 {
 	char	*buffer;
 	int		bytes_read;
@@ -50,7 +50,7 @@ char	*read_and_append(int fd, char **save, int *reached_last)
 			break ;
 	}
 	free(buffer);
-	if (bytes_read == 0 && !*reached_last && *save && (*save)[0] == '\0')
+	if (bytes_read == 0 && *save && (*save)[0] == '\0')
 	{
 		free(*save);
 		*save = NULL;
@@ -58,7 +58,7 @@ char	*read_and_append(int fd, char **save, int *reached_last)
 	return (*save);
 }
 
-char	*extract_line(char **save, char *newline, int *reached_last)
+char	*extract_line(char **save, char *newline)
 {
 	char	*line;
 	char	*temp;
@@ -77,14 +77,13 @@ char	*extract_line(char **save, char *newline, int *reached_last)
 		line = ft_strdup(*save);
 		free(*save);
 		*save = NULL;
-		*reached_last = 1;
 		if (!line)
 			return (NULL);
 	}
 	return (line);
 }
 
-char	*process_line(char **save, int *reached_last)
+char	*process_line(char **save)
 {
 	char	*newline;
 
@@ -93,23 +92,21 @@ char	*process_line(char **save, int *reached_last)
 	{
 		free(*save);
 		*save = NULL;
-		*reached_last = 1;
 		return (NULL);
 	}
-	return (extract_line(save, newline, reached_last));
+	return (extract_line(save, newline));
 }
 
 char	*get_next_line(int fd)
 {
 	static char	*save;
-	static int	reached_last;
 	char		*line;
 
 	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE <= 0)
 		return (NULL);
-	save = read_and_append(fd, &save, &reached_last);
+	save = read_and_append(fd, &save);
 	if (!save)
 		return (NULL);
-	line = process_line(&save, &reached_last);
+	line = process_line(&save);
 	return (line);
 }

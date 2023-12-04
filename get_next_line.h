@@ -6,7 +6,7 @@
 /*   By: mboukour <mboukour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 11:28:46 by mboukour          #+#    #+#             */
-/*   Updated: 2023/12/03 11:35:38 by mboukour         ###   ########.fr       */
+/*   Updated: 2023/12/04 09:49:44 by mboukour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
 # include <unistd.h>
 
 char	*get_next_line(int fd);
-char	*read_and_append(int fd, char **save, int *reached_last);
-char	*process_line(char **save, int *reached_last);
+char	*read_and_append(int fd, char **save);
+char	*process_line(char **save);
 char	*ft_strjoin(char *s1, char *s2);
 char	*ft_strdup(char *s1);
 char	*ft_strchr(char *s, int c);
