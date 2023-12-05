@@ -6,33 +6,33 @@
 /*   By: mboukour <mboukour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 11:28:26 by mboukour          #+#    #+#             */
-/*   Updated: 2023/12/04 09:58:16 by mboukour         ###   ########.fr       */
+/*   Updated: 2023/12/05 13:07:22 by mboukour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*append_buffer(char **save, char *buffer, int bytes_read)
+char	*append_buffer(char **ptr_to_save, char *buffer, int bytes_read)
 {
 	char	*temp;
 
 	if (bytes_read == -1)
 	{
 		free(buffer);
-		free(*save);
-		*save = NULL;
+		free(*ptr_to_save);
+		*ptr_to_save = NULL;
 		return (NULL);
 	}
 	buffer[bytes_read] = '\0';
-	temp = *save;
-	*save = ft_strjoin(*save, buffer);
+	temp = *ptr_to_save;
+	*ptr_to_save = ft_strjoin(*ptr_to_save, buffer);
 	free(temp);
-	if (!*save)
+	if (!*ptr_to_save)
 		return (NULL);
-	return (*save);
+	return (*ptr_to_save);
 }
 
-char	*read_and_append(int fd, char **save)
+char	*read_and_append(int fd, char **ptr_to_save)
 {
 	char	*buffer;
 	int		bytes_read;
@@ -40,61 +40,61 @@ char	*read_and_append(int fd, char **save)
 	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
 		return (NULL);
-	while (!ft_strchr(*save, '\n'))
+	while (!ft_strchr(*ptr_to_save, '\n'))
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		*save = append_buffer(save, buffer, bytes_read);
-		if (!*save)
+		*ptr_to_save = append_buffer(ptr_to_save, buffer, bytes_read);
+		if (!*ptr_to_save)
 			return (NULL);
 		if (bytes_read == 0)
 			break ;
 	}
 	free(buffer);
-	if (bytes_read == 0 && *save && (*save)[0] == '\0')
+	if (bytes_read == 0 && *ptr_to_save && (*ptr_to_save)[0] == '\0')
 	{
-		free(*save);
-		*save = NULL;
+		free(*ptr_to_save);
+		*ptr_to_save = NULL;
 	}
-	return (*save);
+	return (*ptr_to_save);
 }
 
-char	*extract_line(char **save, char *newline)
+char	*extract_line(char **ptr_to_save, char *newline)
 {
 	char	*line;
 	char	*temp;
 
 	if (newline)
 	{
-		line = ft_substr(*save, 0, newline - *save + 1);
-		temp = *save;
-		*save = ft_strdup(newline + 1);
+		line = ft_substr(*ptr_to_save, 0, newline - *ptr_to_save + 1);
+		temp = *ptr_to_save;
+		*ptr_to_save = ft_strdup(newline + 1);
 		free(temp);
-		if (!*save)
+		if (!*ptr_to_save)
 			return (NULL);
 	}
 	else
 	{
-		line = ft_strdup(*save);
-		free(*save);
-		*save = NULL;
+		line = ft_strdup(*ptr_to_save);
+		free(*ptr_to_save);
+		*ptr_to_save = NULL;
 		if (!line)
 			return (NULL);
 	}
 	return (line);
 }
 
-char	*process_line(char **save)
+char	*process_line(char **ptr_to_save)
 {
 	char	*newline;
 
-	newline = ft_strchr(*save, '\n');
-	if (!newline && **save == '\0')
+	newline = ft_strchr(*ptr_to_save, '\n');
+	if (!newline && **ptr_to_save == '\0')
 	{
-		free(*save);
-		*save = NULL;
+		free(*ptr_to_save);
+		*ptr_to_save = NULL;
 		return (NULL);
 	}
-	return (extract_line(save, newline));
+	return (extract_line(ptr_to_save, newline));
 }
 
 char	*get_next_line(int fd)
