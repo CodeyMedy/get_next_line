@@ -6,7 +6,7 @@
 /*   By: mboukour <mboukour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 09:54:45 by mboukour          #+#    #+#             */
-/*   Updated: 2023/12/05 13:08:12 by mboukour         ###   ########.fr       */
+/*   Updated: 2023/12/06 17:00:05 by mboukour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,7 @@
 
 char	*get_next_line(int fd);
 char	*read_and_append(int fd, char **ptr_to_save);
-char	*process_line(char **ptr_to_save);
-char	*extract_line(char **ptr_to_save, char *newline);
-char	*process_line(char **ptr_to_save);
+char	*extract_line(char **ptr_to_save);
 char	*ft_strjoin(char *s1, char *s2);
 char	*ft_strdup(char *s1);
 char	*ft_strchr(char *s, int c);

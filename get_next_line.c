@@ -6,7 +6,7 @@
 /*   By: mboukour <mboukour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 11:28:26 by mboukour          #+#    #+#             */
-/*   Updated: 2023/12/05 13:07:22 by mboukour         ###   ########.fr       */
+/*   Updated: 2023/12/06 17:02:33 by mboukour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,11 @@ char	*read_and_append(int fd, char **ptr_to_save)
 	while (!ft_strchr(*ptr_to_save, '\n'))
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read == 0)
+			break ;
 		*ptr_to_save = append_buffer(ptr_to_save, buffer, bytes_read);
 		if (!*ptr_to_save)
 			return (NULL);
-		if (bytes_read == 0)
-			break ;
 	}
 	free(buffer);
 	if (bytes_read == 0 && *ptr_to_save && (*ptr_to_save)[0] == '\0')
@@ -58,11 +58,13 @@ char	*read_and_append(int fd, char **ptr_to_save)
 	return (*ptr_to_save);
 }
 
-char	*extract_line(char **ptr_to_save, char *newline)
+char	*extract_line(char **ptr_to_save)
 {
 	char	*line;
 	char	*temp;
+	char	*newline;
 
+	newline = ft_strchr(*ptr_to_save, '\n');
 	if (newline)
 	{
 		line = ft_substr(*ptr_to_save, 0, newline - *ptr_to_save + 1);
@@ -83,20 +85,6 @@ char	*extract_line(char **ptr_to_save, char *newline)
 	return (line);
 }
 
-char	*process_line(char **ptr_to_save)
-{
-	char	*newline;
-
-	newline = ft_strchr(*ptr_to_save, '\n');
-	if (!newline && **ptr_to_save == '\0')
-	{
-		free(*ptr_to_save);
-		*ptr_to_save = NULL;
-		return (NULL);
-	}
-	return (extract_line(ptr_to_save, newline));
-}
-
 char	*get_next_line(int fd)
 {
 	static char	*save;
@@ -107,6 +95,6 @@ char	*get_next_line(int fd)
 	save = read_and_append(fd, &save);
 	if (!save)
 		return (NULL);
-	line = process_line(&save);
+	line = extract_line(&save);
 	return (line);
 }

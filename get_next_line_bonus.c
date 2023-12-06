@@ -6,11 +6,13 @@
 /*   By: mboukour <mboukour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 09:54:06 by mboukour          #+#    #+#             */
-/*   Updated: 2023/12/05 13:08:30 by mboukour         ###   ########.fr       */
+/*   Updated: 2023/12/06 17:03:30 by mboukour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
+
+#include "get_next_line.h"
 
 char	*append_buffer(char **ptr_to_save, char *buffer, int bytes_read)
 {
@@ -43,11 +45,11 @@ char	*read_and_append(int fd, char **ptr_to_save)
 	while (!ft_strchr(*ptr_to_save, '\n'))
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read == 0)
+			break ;
 		*ptr_to_save = append_buffer(ptr_to_save, buffer, bytes_read);
 		if (!*ptr_to_save)
 			return (NULL);
-		if (bytes_read == 0)
-			break ;
 	}
 	free(buffer);
 	if (bytes_read == 0 && *ptr_to_save && (*ptr_to_save)[0] == '\0')
@@ -58,11 +60,13 @@ char	*read_and_append(int fd, char **ptr_to_save)
 	return (*ptr_to_save);
 }
 
-char	*extract_line(char **ptr_to_save, char *newline)
+char	*extract_line(char **ptr_to_save)
 {
 	char	*line;
 	char	*temp;
+	char	*newline;
 
+	newline = ft_strchr(*ptr_to_save, '\n');
 	if (newline)
 	{
 		line = ft_substr(*ptr_to_save, 0, newline - *ptr_to_save + 1);
@@ -83,20 +87,6 @@ char	*extract_line(char **ptr_to_save, char *newline)
 	return (line);
 }
 
-char	*process_line(char **ptr_to_save)
-{
-	char	*newline;
-
-	newline = ft_strchr(*ptr_to_save, '\n');
-	if (!newline && **ptr_to_save == '\0')
-	{
-		free(*ptr_to_save);
-		*ptr_to_save = NULL;
-		return (NULL);
-	}
-	return (extract_line(ptr_to_save, newline));
-}
-
 char	*get_next_line(int fd)
 {
 	static char	*save[OPEN_MAX];
@@ -104,9 +94,9 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE <= 0)
 		return (NULL);
-	save[fd] = read_and_append(fd, &save[fd]);
-	if (!save[fd])
+	*save = read_and_append(fd, &save[fd]);
+	if (!*save)
 		return (NULL);
-	line = process_line(&save[fd]);
+	line = extract_line(&save[fd]);
 	return (line);
 }
